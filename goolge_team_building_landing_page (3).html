@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goolge Dễ Thương - Hải Phòng & Hạ Long Team Building 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js for ambient sound synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        googleBlue: '#4285F4',
+                        googleRed: '#EA4335',
+                        googleYellow: '#FBBC05',
+                        googleGreen: '#34A853',
+                        cruiseGold: '#D4AF37',
+                        oceanDeep: '#0A2540',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1e33;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a3a5f;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+        /* Float animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { transform: translateX(0) translateZ(0) scaleY(1); }
+            50% { transform: translateX(-25%) translateZ(0) scaleY(0.8); }
+        }
+        .wave-bg {
+            animation: wave 12s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-googleBlue selection:text-white">
+
+    <script>
+        // Ambient Ocean Synth logic using Tone.js
+        let oceanSynth = null;
+        let isPlaying = false;
+
+        function toggleOceanSound() {
+            if (!oceanSynth) {
+                // Initialize a soft noise source and filter to simulate ocean waves
+                const noise = new Tone.Noise("pink").start();
+                const filter = new Tone.Filter({
+                    type: "lowpass",
+                    Q: 2
+                }).toDestination();
+                
+                noise.connect(filter);
+                
+                // LFO to modulate filter frequency (creates the wave swell effect)
+                const lfo = new Tone.LFO(0.08, 200, 1200).start();
+                lfo.connect(filter.frequency);
+                
+                // Keep the volume very soothing and background-friendly
+                noise.volume.value = -28;
+                
+                oceanSynth = { noise, filter, lfo };
+            }
+
+            if (!isPlaying) {
+                Tone.start();
+                oceanSynth.noise.volume.rampTo(-18, 2);
+                document.getElementById('soundBtnIcon').className = 'fas fa-volume-up text-googleBlue';
+                document.getElementById('soundText').innerText = 'Ambient ON';
+                isPlaying = true;
+            } else {
+                oceanSynth.noise.volume.rampTo(-Infinity, 1);
+                document.getElementById('soundBtnIcon').className = 'fas fa-volume-mute text-slate-400';
+                document.getElementById('soundText').innerText = 'Ambient OFF';
+                isPlaying = false;
+            }
+        }
+    </script>
+
+    <!-- Fixed Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl font-black tracking-tight flex items-center">
+                    <span class="text-googleBlue">G</span>
+                    <span class="text-googleRed">o</span>
+                    <span class="text-googleYellow">o</span>
+                    <span class="text-googleBlue">l</span>
+                    <span class="text-googleGreen">g</span>
+                    <span class="text-googleRed">e</span>
+                    <span class="ml-2 font-light text-slate-300 text-lg sm:inline hidden border-l border-slate-700 pl-3">Dễ Thương ✈️</span>
+                </span>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#about" class="text-slate-300 hover:text-googleBlue transition-colors">Về Chúng Mình</a>
+                <a href="#itinerary" class="text-slate-300 hover:text-googleRed transition-colors">Lịch Trình</a>
+                <a href="#cruise" class="text-slate-300 hover:text-googleYellow transition-colors">Du Thuyền 5⭐</a>
+                <a href="#checklist" class="text-slate-300 hover:text-googleGreen transition-colors">Chuẩn Bị</a>
+            </nav>
+
+            <!-- Sound Toggle & CTA -->
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleOceanSound()" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 transition px-3.5 py-2 rounded-full text-xs font-semibold shadow-inner border border-slate-700">
+                    <i id="soundBtnIcon" class="fas fa-volume-mute text-slate-400"></i>
+                    <span id="soundText" class="text-slate-300">Ambient Sound</span>
+                </button>
+                <a href="https://docs.google.com/spreadsheets/d/1fsFJ6hsPMRJ2zcIP6jvgmZ_nwz7Vzw2ooRmPCorNfDk/edit?resourcekey=0-OMyMOK9B98JUUDwLxlqXgA&gid=1408779136#gid=1408779136" target="_blank" class="bg-gradient-to-r from-googleBlue to-googleGreen text-white font-bold text-sm px-5 py-2.5 rounded-full hover:shadow-lg hover:shadow-googleBlue/20 transform hover:-translate-y-0.5 transition-all">
+                    Đăng Ký Ngay <i class="fas fa-paper-plane ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="about" class="relative min-h-screen pt-28 pb-16 flex flex-col justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+        <!-- Overlay decorative waves -->
+        <div class="absolute bottom-0 left-0 right-0 h-40 overflow-hidden pointer-events-none opacity-30">
+            <svg class="absolute bottom-0 w-full h-full text-googleBlue" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1380,64L1440,64L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" fill="currentColor"></path>
+            </svg>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Left Grid: Text Content -->
+            <div class="lg:col-span-6 space-y-8 text-center lg:text-left">
+                <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-googleBlue/10 to-googleGreen/10 border border-googleBlue/20 px-4 py-2 rounded-full">
+                    <span class="flex h-2.5 w-2.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-googleGreen opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-googleGreen"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-googleBlue uppercase tracking-widest">Team-Building Expedition 2026</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                    Hành Trình Mùa Hè <br>
+                    <span class="bg-gradient-to-r from-googleBlue via-googleRed to-googleYellow bg-clip-text text-transparent">Goolge Dễ Thương</span> 
+                    <span class="text-white">😎</span>
+                </h1>
+
+                <p class="text-slate-400 text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    Sẵn sàng khuấy đảo mùa hè cùng biệt đội siêu nhí nhố của chúng mình! Chuyến đi đặc biệt kết nối Hải Phòng mộng mơ cùng kỳ quan thiên nhiên thế giới vịnh Hạ Long trên siêu du thuyền 5 sao đẳng cấp.
+                </p>
+
+                <!-- Information Grid -->
+                <div class="grid grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">
+                    <div class="bg-slate-900/50 backdrop-blur border border-slate-800 p-4 rounded-2xl flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-googleBlue/10 rounded-xl flex items-center justify-center text-googleBlue text-xl">
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-slate-500 font-medium uppercase">Thời gian</p>
+                            <p class="text-sm font-bold text-slate-200">24/07 - 26/07</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 backdrop-blur border border-slate-800 p-4 rounded-2xl flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-googleYellow/10 rounded-xl flex items-center justify-center text-googleYellow text-xl">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-slate-500 font-medium uppercase">Điểm đến</p>
+                            <p class="text-sm font-bold text-slate-200">Hải Phòng & Hạ Long</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button Container -->
+                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a href="https://docs.google.com/spreadsheets/d/1fsFJ6hsPMRJ2zcIP6jvgmZ_nwz7Vzw2ooRmPCorNfDk/edit?resourcekey=0-OMyMOK9B98JUUDwLxlqXgA&gid=1408779136#gid=1408779136" target="_blank" class="w-full sm:w-auto bg-gradient-to-r from-googleBlue via-googleRed to-googleYellow hover:from-googleBlue/90 text-white font-extrabold text-base px-8 py-4 rounded-full text-center shadow-xl shadow-googleBlue/10 hover:shadow-googleBlue/20 transform hover:-translate-y-1 transition-all duration-200">
+                        Nhanh Tay Đăng Ký! <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#itinerary" class="w-full sm:w-auto text-slate-300 hover:text-white font-semibold text-sm px-6 py-4 rounded-full border border-slate-800 hover:border-slate-700 bg-slate-900/20 hover:bg-slate-900/40 text-center transition">
+                        Xem lịch trình chi tiết
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Grid: Featured Photo (Polaroid Style) -->
+            <div class="lg:col-span-6 flex justify-center">
+                <div class="relative w-full max-w-md animate-float">
+                    <!-- Color blobs behind the picture -->
+                    <div class="absolute -top-6 -left-6 w-32 h-32 bg-googleBlue/30 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-googleRed/20 rounded-full blur-2xl"></div>
+                    
+                    <!-- Polaroid Frame -->
+                    <div class="bg-white p-5 rounded-2xl shadow-2xl shadow-black/60 transform rotate-2 hover:rotate-0 transition-transform duration-500 border border-slate-200">
+                        <div class="relative overflow-hidden rounded-lg aspect-[4/3] bg-slate-100">
+                            <!-- Team picture integration -->
+                            <img src="Team picure.jpg" alt="Goolge Dễ Thương Team" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/800x600/0A2540/FFF?text=Goolge+De+Thuong+Team';">
+                            <!-- Visual Badge on image -->
+                            <span class="absolute top-3 right-3 bg-googleBlue text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                                #ENGAGE'26 ⚡
+                            </span>
+                        </div>
+                        <div class="pt-5 pb-2 text-center text-slate-800">
+                            <h3 class="font-serif italic text-2xl font-bold">Goolge dễ thương</h3>
+                            <p class="text-xs text-slate-500 font-semibold tracking-wider mt-1 uppercase">Ready for Hải Phòng & Hạ Long! 🌊</p>
+                        </div>
+                    </div>
+
+                    <!-- Cute Overlapping Floating Badges -->
+                    <div class="absolute -left-4 bottom-1/4 bg-slate-900/90 border border-slate-700 px-4 py-2.5 rounded-xl shadow-lg flex items-center space-x-2.5 backdrop-blur transform -rotate-6">
+                        <span class="text-lg">🦞</span>
+                        <div>
+                            <p class="text-xs font-bold text-white">Food Tour HP</p>
+                            <p class="text-[10px] text-googleGreen">Đã lên thực đơn</p>
+                        </div>
+                    </div>
+                    <div class="absolute -right-4 top-1/4 bg-slate-900/90 border border-slate-700 px-4 py-2.5 rounded-xl shadow-lg flex items-center space-x-2.5 backdrop-blur transform rotate-6">
+                        <span class="text-lg">🚢</span>
+                        <div>
+                            <p class="text-xs font-bold text-white">Luxury Cruise</p>
+                            <p class="text-[10px] text-googleYellow">5-Star Majesty Prime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Timer Section -->
+    <section class="relative z-20 -mt-10 max-w-5xl mx-auto px-4">
+        <div class="bg-gradient-to-r from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                <div class="md:col-span-4 text-center md:text-left">
+                    <span class="text-xs font-bold text-googleYellow tracking-widest uppercase">We are leaving in...</span>
+                    <h2 class="text-2xl font-extrabold text-white mt-1">Đếm ngược giờ G</h2>
+                    <p class="text-xs text-slate-400 mt-1">Hãy chuẩn bị hành lý và tinh thần đi quẩy!</p>
+                </div>
+                <div class="md:col-span-8">
+                    <!-- Countdown Display -->
+                    <div class="grid grid-cols-4 gap-2 sm:gap-4 text-center">
+                        <div class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-3 sm:p-4">
+                            <span id="days" class="block text-2xl sm:text-4xl font-extrabold text-googleBlue">00</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">Ngày</span>
+                        </div>
+                        <div class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-3 sm:p-4">
+                            <span id="hours" class="block text-2xl sm:text-4xl font-extrabold text-googleRed">00</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">Giờ</span>
+                        </div>
+                        <div class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-3 sm:p-4">
+                            <span id="minutes" class="block text-2xl sm:text-4xl font-extrabold text-googleYellow">00</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">Phút</span>
+                        </div>
+                        <div class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-3 sm:p-4">
+                            <span id="seconds" class="block text-2xl sm:text-4xl font-extrabold text-googleGreen">00</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">Giây</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown JS Execution (Target date: July 24, 2026) -->
+    <script>
+        const targetDate = new Date("July 24, 2026 00:00:00").getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+            
+            if (difference < 0) {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                return;
+            }
+            
+            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+
+    <!-- Detailed Interactive Itinerary Section -->
+    <section id="itinerary" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-xs font-bold text-googleBlue tracking-widest uppercase mb-2">Detailed Schedule</h2>
+            <p class="text-3xl sm:text-4xl font-black font-serif italic text-white mb-4">Lịch Trình Quậy Tưng Bừng</p>
+            <p class="text-slate-400 text-sm">Cùng điểm qua 3 ngày tràn ngập niềm vui, tiếng cười, và những món ăn siêu ngon đất Cảng!</p>
+        </div>
+
+        <div class="space-y-12">
+            <!-- Day 1: Food Tour + Night lights HP -->
+            <div class="bg-gradient-to-br from-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 transition-all duration-300 hover:border-slate-700/80 hover:shadow-xl shadow-black/50">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="inline-block bg-googleRed/10 border border-googleRed/20 px-3.5 py-1 rounded-full text-xs font-bold text-googleRed uppercase tracking-wider">
+                            Ngày 1 • 24/07/2026
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">Hải Phòng Food Tour & City Lights 🌆</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Bắt đầu chuyến phiêu lưu với chiếc bụng đói! Hải Phòng nổi tiếng là "thánh địa" ẩm thực đường phố độc nhất vô nhị. Đêm đến, cả đội sẽ dạo chơi chiêm ngưỡng vẻ đẹp lãng mạn đầy năng động của thành phố hoa phượng đỏ rực rỡ ánh đèn.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <!-- Card 1: Bánh Đa Cua -->
+                        <div class="bg-slate-900/80 rounded-2xl border border-slate-800 overflow-hidden hover:border-googleRed/40 transition group flex flex-col">
+                            <div class="relative h-40 overflow-hidden">
+                                <img src="images (1).jpeg" alt="Bánh đa cua Hải Phòng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/FFF?text=Banh+Da+Cua';">
+                                <span class="absolute top-2 left-2 bg-googleRed text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Ẩm Thực Đậm Vị</span>
+                            </div>
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white mb-1">Bánh Đa Cua Đất Cảng</h4>
+                                    <p class="text-[11px] text-slate-400 leading-relaxed">Sự kết hợp hoàn hảo giữa sợi bánh đa đỏ lai ngon, gạch cua béo ngậy và chả lá lốt thơm lừng.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Bánh Mì Cay -->
+                        <div class="bg-slate-900/80 rounded-2xl border border-slate-800 overflow-hidden hover:border-googleRed/40 transition group flex flex-col">
+                            <div class="relative h-40 overflow-hidden">
+                                <img src="Banh-mi-cay.jpg" alt="Bánh mì cay Hải Phòng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/FFF?text=Banh+Mi+Cay';">
+                                <span class="absolute top-2 left-2 bg-googleYellow text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-full">Món Quà Ăn Vặt</span>
+                            </div>
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white mb-1">Bánh Mì Cay & Chí Chương</h4>
+                                    <p class="text-[11px] text-slate-400 leading-relaxed">Những chiếc bánh mì nhỏ xinh giòn rụm, pate béo ngậy thơm nức chấm kèm tương ớt cay nồng đặc trưng.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Nhà Hát Lớn -->
+                        <div class="bg-slate-900/80 rounded-2xl border border-slate-800 overflow-hidden hover:border-googleRed/40 transition group flex flex-col">
+                            <div class="relative h-40 overflow-hidden">
+                                <img src="nha-hat-lon-hai-phong-haiphong-adventure-nightlife.jpg" alt="Nhà hát lớn Hải Phòng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/FFF?text=Nha+Hat+Lon';">
+                                <span class="absolute top-2 left-2 bg-googleBlue text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Phố Đêm Lên Đèn</span>
+                            </div>
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white mb-1">Hải Phòng City Lights</h4>
+                                    <p class="text-[11px] text-slate-400 leading-relaxed">Check-in Quảng trường Nhà hát lớn lộng lẫy và tận hưởng nhịp sống lãng mạn, nhộn nhịp của Phố Cảng về đêm.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 2: Cruise in Halong Bay -->
+            <div class="bg-gradient-to-br from-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 transition-all duration-300 hover:border-slate-700/80 hover:shadow-xl shadow-black/50">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="inline-block bg-googleYellow/10 border border-googleYellow/20 px-3.5 py-1 rounded-full text-xs font-bold text-googleYellow uppercase tracking-wider">
+                            Ngày 2 • 25/07/2026
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">Majesty Prime Cruise - Halong Bay Lounge 🚢</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Sáng sớm di chuyển sang Hạ Long và check-in Majesty Prime Cruise - du thuyền siêu sang mới tinh vừa ra mắt đầu năm 2025. Trải nghiệm hoàng gia với nội thất gỗ cổ điển kết hợp lối thiết kế tân cổ điển Pháp sang trọng bậc nhất.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Card: Suite Experience -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-googleYellow/30 transition">
+                            <span class="text-2xl">🛏️</span>
+                            <h4 class="text-base font-bold text-white mt-3 mb-1">Phòng Suite Ban Công Riêng</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                100% các phòng đều có ban công hướng trọn vẹn ra vịnh di sản. Cửa kính kịch trần cho phép ngắm nhìn kỳ quan hùng vĩ ngay từ giường ngủ ấm áp hay khi ngâm bồn tắm thư giãn.
+                            </p>
+                        </div>
+                        <!-- Card: Activities -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-googleYellow/30 transition">
+                            <span class="text-2xl">🥂</span>
+                            <h4 class="text-base font-bold text-white mt-3 mb-1">Sunset Party & Bay Lounge</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Chèo thuyền kayak, đắm mình tại bể bơi bốn mùa, thưởng thức tiệc hoàng hôn lãng mạn tại Halong Bay Lounge. Buổi tối tưng bừng với đại tiệc nướng 5 sao và trò câu mực đêm đầy thú vị.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 3: Morning Chills & Flight back -->
+            <div class="bg-gradient-to-br from-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 transition-all duration-300 hover:border-slate-700/80 hover:shadow-xl shadow-black/50">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="inline-block bg-googleGreen/10 border border-googleGreen/20 px-3.5 py-1 rounded-full text-xs font-bold text-googleGreen uppercase tracking-wider">
+                            Ngày 3 • 26/07/2026
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">Chân Trời Góc Bể - Chào Sài Gòn 👋</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Đon bình minh yên tĩnh trên Sundeck, hít thở bầu không khí mặn mòi nguyên sơ của vịnh đá vôi trước khi thu dọn đồ đạc để bay về lại Thành phố Hồ Chí Minh thân yêu vào buổi chiều.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Card: Sunrise Routine -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-googleGreen/30 transition">
+                            <span class="text-2xl">🧘</span>
+                            <h4 class="text-base font-bold text-white mt-3 mb-1">Đón Bình Minh & Yoga nhẹ</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Đón bình minh, thưởng thức trà/cafe sớm và tham gia buổi tập nhẹ nhàng sảng khoái tinh thần trên boong tàu lộng gió, nạp đầy năng lượng cho chặng đường kế tiếp.
+                            </p>
+                        </div>
+                        <!-- Card: Flight back -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-googleGreen/30 transition">
+                            <span class="text-2xl">✈️</span>
+                            <h4 class="text-base font-bold text-white mt-3 mb-1">Bay Về HCM • Lúc 16:00 (4PM)</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Ăn trưa buffet trên tàu trong khi thuyền quay về bến cảng Tuần Châu. Xe đưa đón đưa cả đoàn ra sân bay sẵn sàng cho chuyến bay về HCM cất cánh lúc 16:00 chiều.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cruise Spotlight Section (Tabs for luxury cabins) -->
+    <section id="cruise" class="py-24 bg-slate-950/60 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Overarching Cruise Overview Card featuring the Vessel's Exterior -->
+            <div class="mb-16 bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-5">
+                        <span class="inline-block bg-googleYellow/10 border border-googleYellow/20 px-3.5 py-1 rounded-full text-xs font-bold text-googleYellow uppercase tracking-wider">
+                            Vịnh Hạ Long 5⭐ • Majesty Prime
+                        </span>
+                        <h3 class="text-3xl font-extrabold text-white font-serif italic">Majesty Prime Cruise & Lounge</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Đây chính là ngôi nhà di động của tụi mình giữa kỳ quan thiên nhiên thế giới! Với chiều dài vượt trội, kiến trúc mang đậm nét vương giả cổ điển Đông Dương kết hợp nét thanh lịch của Pháp, Majesty Prime mang đến không gian nghỉ dưỡng đỉnh cao đầy nghệ thuật.
+                        </p>
+                        <div class="grid grid-cols-2 gap-3 pt-2 text-xs text-slate-400">
+                            <div class="flex items-center space-x-2"><i class="fas fa-ship text-googleBlue"></i> <span>Du thuyền vỏ thép thế hệ mới</span></div>
+                            <div class="flex items-center space-x-2"><i class="fas fa-swimmer text-googleGreen"></i> <span>Bể bơi mini & sục Jacuzzi</span></div>
+                            <div class="flex items-center space-x-2"><i class="fas fa-glass-cheers text-googleRed"></i> <span>Sunset Bay Lounge VIP</span></div>
+                            <div class="flex items-center space-x-2"><i class="fas fa-concierge-bell text-googleYellow"></i> <span>Phục vụ chuẩn 5 sao</span></div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7">
+                        <div class="relative rounded-2xl overflow-hidden aspect-[16/10] shadow-2xl group border border-slate-800">
+                            <!-- Integrated ship exterior image '783832264.jpg' -->
+                            <img src="783832264.jpg" alt="Majesty Prime Cruise External view" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.onerror=null; this.src='https://placehold.co/800x500/0A2540/FFF?text=Majesty+Prime+External';">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-6">
+                                <div>
+                                    <span class="bg-googleBlue text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2 inline-block">Mặt ngoài du thuyền</span>
+                                    <p class="text-xs text-slate-300 font-semibold">Du thuyền Majesty Prime trôi yên bình giữa những dãy núi đá vôi thơ mộng</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cabin Tabs Interface -->
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white">Khám Phá Chi Tiết Tiện Nghi</h3>
+                    <p class="text-slate-400 text-xs mt-1">Nơi bạn nghỉ ngơi và tận hưởng trọn vẹn từng khoảnh khắc bình minh</p>
+                </div>
+                <div class="flex flex-wrap gap-2" id="cabin-tabs">
+                    <button onclick="switchTab('tab-junior')" id="btn-tab-junior" class="tab-btn px-4 py-2 rounded-full text-xs font-bold transition duration-200 bg-googleYellow text-slate-900 border border-googleYellow">
+                        Phòng Suite Thượng Hạng
+                    </button>
+                    <button onclick="switchTab('tab-pool')" id="btn-tab-pool" class="tab-btn px-4 py-2 rounded-full text-xs font-bold transition duration-200 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 bg-slate-900/40">
+                        Sundeck & Bể Bơi Sục
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content Display Area -->
+            <div id="tab-content" class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl">
+                <!-- Tab: Suite Cabins (Default active) -->
+                <div id="tab-junior" class="tab-pane block">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-6">
+                            <span class="text-xs font-bold text-googleYellow bg-googleYellow/10 px-3.5 py-1.5 rounded-full border border-googleYellow/20">35m² - 45m² • Toàn Cảnh Hướng Vịnh</span>
+                            <h4 class="text-2xl font-black text-white">Phòng Suite Thiết Kế Đông Dương</h4>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Đắm mình vào không gian tinh tế của phòng Suite trên tàu Majesty Prime. Được lót sàn gỗ sẫm màu quý phái, ô cửa kính khổng lồ sát trần kéo dài mở ra tầm nhìn vô cực trực diện hướng vịnh di sản. Bạn có thể đón những vệt nắng đầu ngày ngay từ giường ngủ êm ái hoặc bồn tắm đôi xa hoa.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-300">
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Ban công đón gió riêng tư</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Bồn tắm đôi cao cấp sát kính</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Nội thất Pháp tân cổ điển</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Mini bar miễn phí hàng ngày</span></div>
+                            </div>
+                        </div>
+                        <div class="relative rounded-2xl overflow-hidden aspect-video shadow-lg group border border-slate-800">
+                            <!-- Integrated luxury cabin suite image '19-1.jpg' -->
+                            <img src="19-1.jpg" alt="Majesty Prime Luxury Cabin interior view" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='https://placehold.co/800x450/0d1e33/FFF?text=Majesty+Prime+Cabin+Suite';">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
+                                <p class="text-sm font-bold text-white">Phòng ngủ Suite rộng mở hướng thẳng ra núi non kỳ vĩ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Sundeck & Pool -->
+                <div id="tab-pool" class="tab-pane hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-6">
+                            <span class="text-xs font-bold text-googleYellow bg-googleYellow/10 px-3.5 py-1.5 rounded-full border border-googleYellow/20">Mũi Tàu • Độc Bản Bể Sục Jacuzzi</span>
+                            <h4 class="text-2xl font-black text-white">Sundeck Panorama & Bể Sục Mũi Tàu</h4>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Điểm nhấn "đắt giá" nhất trên Majesty Prime chính là góc bể bơi sục Jacuzzi hình tam giác được thiết kế độc đáo ngay tại mũi tàu. Nơi đây mang đến góc nhìn 180 độ không giới hạn ra vịnh, mang lại trải nghiệm thư giãn đẳng cấp khi vừa ngâm mình trong dòng nước mát lành, vừa nhâm nhi cocktail hoàng hôn cùng biệt đội Goolge dễ thương.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-300">
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Bể sục Jacuzzi ngoài trời</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Sân tắm nắng siêu rộng</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Góc check-in ôm trọn mũi tàu</span></div>
+                                <div class="flex items-center space-x-2"><i class="fas fa-check-circle text-googleGreen"></i> <span>Bay Lounge lộng gió</span></div>
+                            </div>
+                        </div>
+                        <div class="relative rounded-2xl overflow-hidden aspect-video shadow-lg group border border-slate-800">
+                            <!-- Integrated pool deck image 'images.jpeg' -->
+                            <img src="images.jpeg" alt="Majesty Prime Plunge Pool on Bow Deck" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='https://placehold.co/800x450/0d1e33/FFF?text=Majesty+Prime+Pool+Deck';">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
+                                <p class="text-sm font-bold text-white">Bể sục Jacuzzi tam giác độc nhất vô nhị tại boong mũi tàu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab switching JS -->
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab panes
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach(pane => {
+                pane.classList.add('hidden');
+                pane.classList.remove('block');
+            });
+
+            // Show active tab pane
+            const activePane = document.getElementById(tabId);
+            activePane.classList.remove('hidden');
+            activePane.classList.add('block');
+
+            // Reset tab button states
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-full text-xs font-bold transition duration-200 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 bg-slate-900/40";
+            });
+
+            // Set clicked button active
+            const btnId = 'btn-' + tabId;
+            document.getElementById(btnId).className = "tab-btn px-4 py-2 rounded-full text-xs font-bold transition duration-200 bg-googleYellow text-slate-900 border border-googleYellow";
+        }
+    </script>
+
+    <!-- Packing Preparation Checklist Section -->
+    <section id="checklist" class="py-24 max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="bg-gradient-to-br from-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+            <!-- Background glow -->
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-googleGreen/10 rounded-full blur-3xl"></div>
+
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-xs font-bold text-googleGreen tracking-widest uppercase">Are you ready?</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white mt-2">Checklist Chuẩn Bị Vali 🎒</h3>
+                <p class="text-slate-400 text-xs mt-1">Càng tích nhiều ô, hành trình đi trốn của bạn càng hoàn hảo!</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-8">
+                <div class="flex justify-between text-xs font-bold text-slate-300 mb-2">
+                    <span>Mức độ sẵn sàng</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-3.5 rounded-full overflow-hidden border border-slate-700/50 p-0.5">
+                    <div id="progress-bar" class="bg-gradient-to-r from-googleBlue via-googleYellow to-googleGreen h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Interactive list items -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="flex items-start space-x-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 cursor-pointer hover:border-slate-700/80 transition-all select-none">
+                    <input type="checkbox" onchange="calculateProgress()" class="checklist-item mt-1 rounded text-googleGreen focus:ring-googleGreen bg-slate-950 border-slate-700 h-4.5 w-4.5">
+                    <div>
+                        <span class="text-xs font-bold text-slate-200">Một chiếc bụng siêu đói</span>
+                        <p class="text-[10px] text-slate-400">Dành riêng cho bữa tiệc hoành tráng Food Tour Hải Phòng</p>
+                    </div>
+                </label>
+                <label class="flex items-start space-x-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 cursor-pointer hover:border-slate-700/80 transition-all select-none">
+                    <input type="checkbox" onchange="calculateProgress()" class="checklist-item mt-1 rounded text-googleGreen focus:ring-googleGreen bg-slate-950 border-slate-700 h-4.5 w-4.5">
+                    <div>
+                        <span class="text-xs font-bold text-slate-200">Quần áo đi biển sặc sỡ</span>
+                        <p class="text-[10px] text-slate-400">Dành cho bộ ảnh cực nghệ trên Majesty Prime Cruise</p>
+                    </div>
+                </label>
+                <label class="flex items-start space-x-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 cursor-pointer hover:border-slate-700/80 transition-all select-none">
+                    <input type="checkbox" onchange="calculateProgress()" class="checklist-item mt-1 rounded text-googleGreen focus:ring-googleGreen bg-slate-950 border-slate-700 h-4.5 w-4.5">
+                    <div>
+                        <span class="text-xs font-bold text-slate-200">CCCD / Hộ chiếu bản gốc</span>
+                        <p class="text-[10px] text-slate-400">Giấy tờ tùy thân bắt buộc để làm thủ tục bay và lên tàu</p>
+                    </div>
+                </label>
+                <label class="flex items-start space-x-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 cursor-pointer hover:border-slate-700/80 transition-all select-none">
+                    <input type="checkbox" onchange="calculateProgress()" class="checklist-item mt-1 rounded text-googleGreen focus:ring-googleGreen bg-slate-950 border-slate-700 h-4.5 w-4.5">
+                    <div>
+                        <span class="text-xs font-bold text-slate-200">Kem chống nắng & kính râm</span>
+                        <p class="text-[10px] text-slate-400">Bảo vệ làn da ngọc ngà dưới cái nắng Hạ Long rực rỡ</p>
+                    </div>
+                </label>
+                <label class="flex items-start space-x-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 cursor-pointer hover:border-slate-700/80 transition-all select-none">
+                    <input type="checkbox" onchange="calculateProgress()" class="checklist-item mt-1 rounded text-googleGreen focus:ring-googleGreen bg-slate-950 border-slate-700 h-4.5 w-4.5">
+                    <div>
+                        <span class="text-xs font-bold text-slate-200">Đồ bơi cực chất</span>
+                        <p class="text-[10px] text-slate-400">Sẵn sàng đắm chìm trong bồn sục Jacuzzi bốn mùa</p>
+                    </div>
+                </label>
+                <label class="flex items-start space-x-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 cursor-pointer hover:border-slate-700/80 transition-all select-none">
+                    <input type="checkbox" onchange="calculateProgress()" class="checklist-item mt-1 rounded text-googleGreen focus:ring-googleGreen bg-slate-950 border-slate-700 h-4.5 w-4.5">
+                    <div>
+                        <span class="text-xs font-bold text-slate-200">Tinh thần Goolge hết mình!</span>
+                        <p class="text-[10px] text-slate-400">Quậy không điểm dừng, cười vang hết nấc</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checklist calculation script -->
+    <script>
+        function calculateProgress() {
+            const items = document.querySelectorAll('.checklist-item');
+            const checkedCount = Array.from(items).filter(item => item.checked).length;
+            const percentage = Math.round((checkedCount / items.length) * 100);
+            
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-percent').innerText = percentage + '%';
+        }
+    </script>
+
+    <!-- Call To Action Registration Section -->
+    <section class="py-24 relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-black">
+        <!-- Floating colorful particles -->
+        <div class="absolute left-1/4 top-1/4 w-3 h-3 bg-googleBlue rounded-full animate-pulse"></div>
+        <div class="absolute right-1/4 bottom-1/4 w-3.5 h-3.5 bg-googleYellow rounded-full animate-pulse"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10 space-y-8">
+            <div class="inline-flex items-center space-x-2 bg-googleBlue/10 border border-googleBlue/20 px-4 py-2 rounded-full">
+                <i class="fas fa-sparkles text-googleYellow"></i>
+                <span class="text-xs font-bold text-googleBlue uppercase tracking-wider">Đừng Bỏ Lỡ Cơ Hội Có 1 Không 2</span>
+            </div>
+            
+            <h2 class="text-4xl sm:text-5xl font-black tracking-tight leading-tight max-w-2xl mx-auto">
+                Cùng Nhau Tạo Nên <br>
+                <span class="bg-gradient-to-r from-googleBlue via-googleRed to-googleYellow bg-clip-text text-transparent">Kỷ Niệm Không Thể Quên</span>
+            </h2>
+            
+            <p class="text-slate-400 text-base max-w-lg mx-auto">
+                Hạn chót đang đến gần. Mau chóng điền thông tin đăng ký để Ban tổ chức sắp xếp chỗ ngồi, loại phòng du thuyền và đặt vé máy bay khứ hồi chuẩn xác nhé!
+            </p>
+
+            <div class="bg-slate-900/60 p-6 rounded-3xl border border-slate-800 max-w-md mx-auto shadow-2xl space-y-4">
+                <p class="text-xs font-bold text-slate-300">Click nút bên dưới để chuyển tiếp sang link Google Sheets đăng ký:</p>
+                <a href="https://docs.google.com/spreadsheets/d/1fsFJ6hsPMRJ2zcIP6jvgmZ_nwz7Vzw2ooRmPCorNfDk/edit?resourcekey=0-OMyMOK9B98JUUDwLxlqXgA&gid=1408779136#gid=1408779136" target="_blank" class="block w-full bg-gradient-to-r from-googleBlue via-googleRed to-googleYellow text-white font-extrabold py-4 px-6 rounded-2xl hover:shadow-xl hover:shadow-googleBlue/20 transform hover:-translate-y-0.5 transition duration-200">
+                    <i class="fas fa-file-signature mr-2"></i> Click Đăng Ký Tại Đây!
+                </a>
+                <div class="flex items-center justify-between text-[10px] text-slate-500 font-semibold px-2">
+                    <span>⚡ Xác nhận nhanh</span>
+                    <span>📂 Link Google Sheets</span>
+                    <span>🔒 Bảo mật 100%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <span class="text-lg font-black tracking-tight flex items-center justify-center">
+                <span class="text-googleBlue">G</span>
+                <span class="text-googleRed">o</span>
+                <span class="text-googleYellow">o</span>
+                <span class="text-googleBlue">l</span>
+                <span class="text-googleGreen">g</span>
+                <span class="text-googleRed">e</span>
+                <span class="ml-1.5 font-light text-slate-400 text-sm">Dễ Thương ✨</span>
+            </span>
+            <p>
+                Thiết kế đặc biệt dành riêng cho biệt đội Goolge dễ thương. Mọi thông tin cập nhật sẽ được thông báo sớm nhất.<br>
+                Chúc mọi người có một chuyến đi bùng nổ, rực rỡ và ngập tràn niềm vui!
+            </p>
+            <p class="text-[10px] text-slate-600">
+                &copy; 2026 Goolge dễ thương Team Building. Ho Chi Minh City to Northern Vietnam.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
